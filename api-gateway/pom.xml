@@ -6,18 +6,26 @@
         <artifactId>product-management</artifactId>
         <version>0.0.1-SNAPSHOT</version>
     </parent>
-    <artifactId>discovery-server</artifactId>
-    <name>Archetype - discovery-server</name>
+    <artifactId>api-gateway</artifactId>
+    <name>Archetype - api-gateway</name>
     <url>http://maven.apache.org</url>
+
     <properties>
         <spring-cloud.version>2023.0.0</spring-cloud.version>
     </properties>
+
     <dependencies>
         <dependency>
             <groupId>org.springframework.cloud</groupId>
-            <artifactId>spring-cloud-starter-netflix-eureka-server</artifactId>
+            <artifactId>spring-cloud-starter-netflix-eureka-client</artifactId>
+        </dependency>
+
+        <dependency>
+            <groupId>org.springframework.cloud</groupId>
+            <artifactId>spring-cloud-starter-gateway</artifactId>
         </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

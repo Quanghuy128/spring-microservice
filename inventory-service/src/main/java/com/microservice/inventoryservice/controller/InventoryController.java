@@ -19,11 +19,11 @@ public class InventoryController {
 
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public void createInventory(){
-
+    public String createInventory(){
+        return "Inventory Successfully";
     }
 
-    @GetMapping()
+    @GetMapping
     @ResponseStatus(HttpStatus.OK)
     public List<InventoryResponse> isInStock(@RequestParam List<String> skuCodes){
         return inventoryService.isInStock(skuCodes);
