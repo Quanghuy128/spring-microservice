@@ -1,12 +1,18 @@
+
 eureka:
+  username: ${EUREKA_USERNAME:eureka}
+  password: ${EUREKA_PASSWORD:password}
   instance:
     hostname: localhost
     prefer-ip-address: true
   client:
-    register-with-eureka: 'false'
-    fetch-registry: 'false'
+    register-with-eureka: false
+    fetch-registry: false
+    serviceUrl:
+      defaultZone: http://eureka:password@localhost:8761/eureka/
   server:
     renewal-percent-threshold: 0.85
+    wait-time-in-ms-when-sync-empty: 0
 
 server:
   port: 8761
@@ -16,3 +22,4 @@ management:
     web:
       exposure:
         include: '*'
+
