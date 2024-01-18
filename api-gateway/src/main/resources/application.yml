@@ -38,12 +38,22 @@ spring:
           uri: http://localhost:8761
           predicates:
             - Path=/eureka/**
+    compatibility-verifier:
+      enabled: false
   security:
     oauth2:
       resource server:
         jwt:
           issuer-uri: http://localhost:8081/realms/spring-boot-microservices-realm
-
+  zipkin:
+    base-url: http://localhost:9411/
+    enabled: true
+    locator:
+      discovery:
+        enabled: true
+  sleuth:
+    sampler:
+      probability: 1.0
 logging:
   level:
     root: INFO
@@ -55,4 +65,5 @@ logging:
               RouteDefinitionLocator: INFO
 server:
   port: 8080
+
 
