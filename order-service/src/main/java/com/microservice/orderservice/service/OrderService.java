@@ -8,6 +8,7 @@ import com.microservice.orderservice.model.Order;
 import com.microservice.orderservice.model.OrderLineItem;
 import com.microservice.orderservice.repository.OrderRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cloud.client.circuitbreaker.ReactiveCircuitBreaker;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -31,7 +32,7 @@ public class OrderService {
                 .toList();
     }
 
-    public void placeOrder(OrderRequest orderRequest){
+    public String placeOrder(OrderRequest orderRequest){
         Order order = new Order();
         order.setOrderNumber(UUID.randomUUID().toString());
 
@@ -56,6 +57,7 @@ public class OrderService {
 
         if(result){
             orderRepository.save(order);
+            return "Ordered Successfully";
         }else{
             throw new IllegalArgumentException("Product is not in stock...");
         }
