@@ -13,7 +13,6 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -32,7 +31,6 @@ public class OrderService {
     private final WebClient.Builder webClientBuilder;
     private final Tracer tracer;
     private final KafkaProducer kafkaProducer;
-
     public List<OrderResponse> getAllOrders(){
         return orderRepository.findAll()
                 .stream()
@@ -68,8 +66,9 @@ public class OrderService {
             boolean result = Arrays.stream(inventoryResponses).allMatch(InventoryResponse::isInStock);
 
             if(result){
+                log.info(order.getOrderNumber());
                 orderRepository.save(order);
-                kafkaProducer.send(order.getOrderNumber());
+                kafkaProducer.send(new OrderPlaceEvent(order.getOrderNumber()));
                 return "Ordered Successfully";
             }else{
                 throw new IllegalArgumentException("Product is not in stock...");
