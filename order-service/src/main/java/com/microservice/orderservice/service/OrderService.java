@@ -1,9 +1,11 @@
 package com.microservice.orderservice.service;
 
+import com.microservice.orderservice.config.KafkaProducer;
 import com.microservice.orderservice.dto.InventoryResponse;
 import com.microservice.orderservice.dto.OrderLineItemDto;
 import com.microservice.orderservice.dto.OrderRequest;
 import com.microservice.orderservice.dto.OrderResponse;
+import com.microservice.orderservice.event.OrderPlaceEvent;
 import com.microservice.orderservice.model.Order;
 import com.microservice.orderservice.model.OrderLineItem;
 import com.microservice.orderservice.repository.OrderRepository;
@@ -11,7 +13,7 @@ import io.micrometer.tracing.Span;
 import io.micrometer.tracing.Tracer;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.kafka.core.KafkaTemplate;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.reactive.function.client.WebClient;
@@ -29,6 +31,7 @@ public class OrderService {
     private final OrderRepository orderRepository;
     private final WebClient.Builder webClientBuilder;
     private final Tracer tracer;
+    private final KafkaProducer kafkaProducer;
 
     public List<OrderResponse> getAllOrders(){
         return orderRepository.findAll()
@@ -66,7 +69,7 @@ public class OrderService {
 
             if(result){
                 orderRepository.save(order);
-
+                kafkaProducer.send(order.getOrderNumber());
                 return "Ordered Successfully";
             }else{
                 throw new IllegalArgumentException("Product is not in stock...");
